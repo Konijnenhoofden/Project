@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: #f0f4ff;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: #223366;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    button {
+      font-family: inherit;
+      border: none;
+      outline: none;
+    }
+    header {
+      background: linear-gradient(90deg, #c3d0ff, #a0b9ff);
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1.5rem;
+      box-shadow: 0 4px 8px rgb(100 120 255 / 0.25);
+      user-select: none;
+    }
+    #logo {
+      height: 50px;
+      margin-right: 1.5rem;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: box-shadow 0.3s ease;
+    }
+    #logo:hover, #logo:focus {
+      box-shadow: 0 0 15px #4a72ff;
+      outline: none;
+    }
+    nav {
+      display: flex;
+      gap: 2.2rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    nav a {
+      padding: 0.5rem 0.7rem;
+      border-radius: 15px;
+      color: #334477;
+      position: relative;
+      transition:
+        color 0.35s ease,
+        background-color 0.35s ease,
+        box-shadow 0.35s ease;
+    }
+    nav a.active, nav a:hover, nav a:focus {
+      background: #5d82ff;
+      color: #e5eaff;
+      box-shadow: 0 0 18px #627fff;
+      outline: none;
+    }
+
+    .container {
+      display: flex;
+      height: calc(100vh - 62px);
+      max-height: 100vh;
+      overflow: hidden;
+    }
+
+    #sidebar {
+      background: #e4ebff;
+      width: 250px;
+      padding: 1rem 1.3rem;
+      box-shadow: inset -5px 0 12px rgba(0, 0, 80, 0.1);
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+      display: block;
+    }
+    #sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    #sidebar::-webkit-scrollbar-thumb {
+      background: #627fff;
+      border-radius: 20px;
+    }
+
+    #search-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    #search-input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      border-radius: 15px;
+      border: 1.8px solid #627fff;
+      background: #d5deff;
+      color: #223366;
+      box-shadow: 0 0 8px #627fff66;
+      transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+    }
+    #search-input::placeholder {
+      color: #8797c0;
+    }
+    #search-input:focus {
+      border-color: #3149ff;
+      box-shadow: 0 0 18px #3149ffaa;
+      outline: none;
+    }
+
+    #genres-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .genre-chip {
+      background-color: #d9e3ff;
+      color: #223366;
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      border-radius: 15px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 1.1rem;
+      border: 2px solid transparent;
+      text-align: center;
+      box-shadow: none;
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+      width: 100%;
+      user-select: none;
+    }
+    .genre-chip.selected {
+      background-color: #6586ff;
+      color: #e5eaff;
+      box-shadow: 0 0 15px rgba(101, 134, 255, 0.8);
+      border-color: #4a6eff;
+    }
+    .genre-chip:hover, .genre-chip:focus {
+      background-color: #7c94ff;
+      color: #e5eaff;
+      border-color: #4a6eff;
+      outline: none;
+      box-shadow: 0 0 20px #6e80ffcc;
+    }
+
+    #main {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      background: #f9fbff;
+      box-shadow: inset 5px 0 12px rgba(0, 0, 80, 0.05);
+      border-top-left-radius: 40px;
+      border-bottom-left-radius: 40px;
+      display: flex;
+      flex-direction: column;
+      scroll-behavior: smooth;
+    }
+    #main:focus {
+      outline: 3px solid #627fff;
+      outline-offset: 6px;
+    }
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 240px);
+  justify-content: start; /* Zorgt voor linksuitlijning */
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+
+    .item-card {
+      width: 240px;
+      height: 360px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 6px 14px rgba(50, 60, 110, 0.1);
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+      user-select: none;
+      outline-offset: 4px;
+    }
+    .item-card:focus {
+      outline: 3px solid #627fff;
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(98, 127, 255, 0.6);
+    }
+    .item-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 20px rgba(98, 127, 255, 0.4);
+    }
+
+    .item-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px 20px 0 0;
+      user-select: none;
+      pointer-events: none;
+      flex-shrink: 0;
+    }
+    .item-card .title {
+      padding: 0.6rem 0.8rem;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #223366;
+      user-select: none;
+      text-align: center;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.9);
+      margin-top: auto;
+      border-radius: 0 0 20px 20px;
+    }
+
+    #modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(30, 40, 90, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 1rem;
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+    }
+    #modal.visible {
+      display: flex;
+      animation: fadeIn 0.35s ease forwards;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    #modal iframe {
+      width: 80vw;
+      height: 80vh;
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 0 40px #627fffcc;
+      background: #111;
+    }
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      font-size: 3rem;
+      color: #e1e6ff;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease;
+      font-weight: 900;
+      z-index: 10000;
+      filter: drop-shadow(0 0 2px #627fff);
+      line-height: 1;
+    }
+    .close-btn:hover, .close-btn:focus {
+      color: #a0baff;
+      outline: none;
+    }
+
+    #season-selector {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    #season-selector button {
+      background-color: #d9e3ff;
+      border-radius: 15px;
+      padding: 0.5rem 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      user-select: none;
+      font-size: 1rem;
+      color: #223366;
+    }
+    #season-selector button.selected {
+      background-color: #627fff;
+      color: #e5eaff;
+      border-color: #4a6eff;
+      box-shadow: 0 0 15px #627fffcc;
+    }
+    #season-selector button:hover, #season-selector button:focus {
+      background-color: #7a8cff;
+      color: #e5eaff;
+      outline: none;
+      box-shadow: 0 0 20px #627fffcc;
+    }
+
+    #episode-list {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+    }
+    #episode-list button {
+      background-color: #d9e3ff;
+      border-radius: 15px;
+      padding: 0.55rem 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      user-select: none;
+      font-size: 1rem;
+      color: #223366;
+    }
+    #episode-list button.selected {
+      background-color: #627fff;
+      color: #e5eaff;
+      border-color: #4a6eff;
+      box-shadow: 0 0 15px #627fffcc;
+    }
+    #episode-list button:hover, #episode-list button:focus {
+      background-color: #7a8cff;
+      color: #e5eaff;
+      outline: none;
+      box-shadow: 0 0 20px #627fffcc;
+    }
+
+    .no-results {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #334477;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    #main::-webkit-scrollbar {
+      width: 8px;
+    }
+    #main::-webkit-scrollbar-thumb {
+      background: #627fff88;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header role="banner">
+    <img id="logo" src="https://media.discordapp.net/attachments/1291804160924057662/1390377478307975179/Nieuw_project_51.png?ex=6868096e&is=6866b7ee&hm=5e4ddf84438c1a41c4f3eda9d17a1d0d8491a9bd5a322a28c1ea02ca1564782e&=&format=webp&quality=lossless" alt="Film & Serie Logo" tabindex="0" />
+    <nav role="navigation" aria-label="Hoofd navigatie">
+      <a href="#" id="nav-films" role="tab" aria-selected="true" tabindex="0">Films</a>
+      <a href="#" id="nav-series" role="tab" aria-selected="false" tabindex="-1">Series</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <aside id="sidebar" aria-label="Zoek en filters">
+      <div id="search-container">
+        <input
+          type="search"
+          id="search-input"
+          placeholder="Zoek..."
+          aria-label="Zoek films of series"
+          disabled
+        />
+      </div>
+      <div id="genres-container" role="list" aria-label="Genre filters"></div>
+    </aside>
+
+    <main id="main" tabindex="0" aria-live="polite" aria-atomic="true">
+      <!-- Hier komen je items dynamisch in de .item-grid -->
+    </main>
+  </div>
+
+  <div id="modal" role="dialog" aria-modal="true" aria-label="Videospeler">
+    <button class="close-btn" aria-label="Sluit video">&times;</button>
+    <iframe src="" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+  </div>
+  
+<script>
+  const films = [
+    {
+      id: 117251,
+      title: "The White House Down",
+      image: "https://m.media-amazon.com/images/M/MV5BNTZkMmRiY2EtOTljZS00MjJjLWFiNDQtNjEwYWE0NWNkYjI4XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/117251"
+    },
+    {
+      id: 423204,
+      title: "Angel has fallen",
+      image: "https://de.web.img3.acsta.net/pictures/19/07/23/11/35/4573551.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/423204"
+    },
+        {
+      id: 267860,
+      title: "London has fallen",
+      image: "https://images.justwatch.com/poster/75720245/s718/london-has-fallen.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/267860"
+    },
+        {
+      id: 117263,
+      title: "Olympus has fallen",
+      image: "https://m.media-amazon.com/images/M/MV5BNzg3Mjc0YzItZWQyOS00ODY4LTgwZjUtYWRmYzM1MDg1ZDA5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/117263"
+    },
+        {
+      id: 1371202,
+      title: "iHostage",
+      image: "https://www.moviemeter.nl/images/cover/1167000/1167514.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/1371202"
+    },
+            {
+      id: 557,
+      title: "Spider-man",
+      image: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6c/Spider-Man_%282002_film%29_poster.jpg/250px-Spider-Man_%282002_film%29_poster.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/557"
+    },
+            {
+      id: 315635,
+      title: "Spider-man homecoming",
+      image: "https://image.tmdb.org/t/p/w342/c24sv2weTHPsmDa7jEMN0m2P3RT.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/315635"
+    },
+            {
+      id: 634649,
+      title: "Spider-man no way home",
+      image: "https://image.tmdb.org/t/p/w342/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/634649"
+    },
+            {
+      id: 429617,
+      title: "Spider-man far from home",
+      image: "https://image.tmdb.org/t/p/w342/4q2NNj4S5dG2RLF9CpXsej7yXl.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/429617"
+    },
+            {
+      id: 1930,
+      title: "The amazing spider man",
+      image: "https://image.tmdb.org/t/p/w342/jexoNYnPd6vVrmygwF6QZmWPFdu.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/1930"
+    },
+            {
+      id: 559,
+      title: "Spider-man 3",
+      image: "https://image.tmdb.org/t/p/w342/qFmwhVUoUSXjkKRmca5yGDEXBIj.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/559"
+    },
+            {
+      id: 102382,
+      title: "The amazing spider-man 2",
+      image: "https://image.tmdb.org/t/p/w342/dGjoPttcbKR5VWg1jQuNFB247KL.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/102382"
+    },
+            {
+      id: 299537,
+      title: "Captian Marvel",
+      image: "https://image.tmdb.org/t/p/w342/AtsgWhDnHTq68L0lLsUrCnM7TjG.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/299537"
+    },
+            {
+      id: 1726,
+      title: "Iron man",
+      image: "https://image.tmdb.org/t/p/w342/78lPtwv72eTNqFW9COBYI0dWDJa.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/1726"
+    },
+            {
+      id: 1724,
+      title: "The Incredible Hulk",
+      image: "https://image.tmdb.org/t/p/w342/gKzYx79y0AQTL4UAk1cBQJ3nvrm.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/1724"
+    }, 
+    {
+      id: 10138,
+      title: "Iron man 2",
+      image: "https://image.tmdb.org/t/p/w342/6WBeq4fCfn7AN0o21W9qNcRF2l9.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/10138"
+    },
+    {
+      id: 10195,
+      title: "Thor",
+      image: "https://image.tmdb.org/t/p/w342/prSfAi1xGrhLQNxVSUFh61xQ4Qy.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/10195"
+    },
+    {
+      id: 1771,
+      title: "Captain America: The First Avenger",
+      image: "https://image.tmdb.org/t/p/w342/vSNxAJTlD0r02V9sPYpOjqDZXUK.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/1771"
+    },
+    {
+      id: 24428,
+      title: "The Avengers",
+      image: "https://image.tmdb.org/t/p/w342/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/24428"
+    },
+    {
+      id: 68721,
+      title: "Iron man 3",
+      image: "https://image.tmdb.org/t/p/w342/qhPtAc1TKbMPqNvcdXSOn9Bn7hZ.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/68721"
+    },
+    {
+      id: 76338,
+      title: "Thor: The Dark World",
+      image: "https://image.tmdb.org/t/p/w342/wD6g4EcmR6R3VNbuBmNOVq2qWrM.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/76338"
+    },
+    {
+      id: 100402,
+      title: "Captain America: The Winter Soldier",
+      image: "https://image.tmdb.org/t/p/w342/tVFRpFw3xTedgPGqxW0AOI8Qhh0.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/100402"
+    },
+    {
+      id: 118340,
+      title: "Guardians of the Galaxy",
+      image: "https://image.tmdb.org/t/p/w342/jPrJPZKJVhvyJ4DmUTrDgmFN0yG.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/118340"
+    },
+    {
+      id: 99861,
+      title: "Avengers: Age of Ultron",
+      image: "https://image.tmdb.org/t/p/w342/4ssDuvEDkSArWEdyBl2X5EHvYKU.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/99861"
+    },
+       {
+      id: 102899,
+      title: "Ant-Man",
+      image: "https://image.tmdb.org/t/p/w342/rQRnQfUl3kfp78nCWq8Ks04vnq1.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/102899"
+    },
+       {
+      id: 271110,
+      title: "Captain America: Civil War",
+      image: "https://image.tmdb.org/t/p/w342/rAGiXaUfPzY7CDEyNKUofk3Kw2e.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/271110"
+    },
+       {
+      id: 284052,
+      title: "Doctor Strange",
+      image: "https://image.tmdb.org/t/p/w342/xf8PbyQcR5ucXErmZNzdKR0s8ya.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/284052"
+    },
+       {
+      id: 283995,
+      title: "Guardians of the Galaxy Vol. 2",
+      image: "https://image.tmdb.org/t/p/w342/y4MBh0EjBlMuOzv9axM4qJlmhzz.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/283995"
+    },
+       {
+      id: 284053,
+      title: "Thor: Ragnarok",
+      image: "https://image.tmdb.org/t/p/w342/rzRwTcFvttcN1ZpX2xv4j3tSdJu.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/284053"
+    },
+       {
+      id: 284054,
+      title: "Black Panther",
+      image: "https://image.tmdb.org/t/p/w342/uxzzxijgPIY7slzFvMotPv8wjKA.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/284054"
+    },
+       {
+      id: 299536,
+      title: "Avengers: Infinity War",
+      image: "https://image.tmdb.org/t/p/w342/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/299536"
+    },
+       {
+      id: 363088,
+      title: "Ant-Man and the Wasp",
+      image: "https://image.tmdb.org/t/p/w342/cFQEO687n1K6umXbInzocxcnAQz.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/363088"
+    },
+       {
+      id: 299534,
+      title: "Avengers: Endgame",
+      image: "https://image.tmdb.org/t/p/w342/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/299534"
+    },
+       {
+      id: 497698,
+      title: "Black Widow",
+      image: "https://image.tmdb.org/t/p/w342/7JPpIjhD2V0sKyFvhB9khUMa30d.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/497698"
+    },
+       {
+      id: 566525,
+      title: "Shang‑Chi and the Legend of the Ten Rings",
+      image: "https://image.tmdb.org/t/p/w342/d08HqqeBQSwN8i8MEvpsZ8Cb438.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/566525"
+    },
+       {
+      id: 524434,
+      title: "Eternals",
+      image: "https://image.tmdb.org/t/p/w342/lFByFSLV5WDJEv3KabbdAF959F2.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/524434"
+    },
+           {
+      id: 453395,
+      title: "Doctor Strange in the Multiverse of Madness",
+      image: "https://image.tmdb.org/t/p/w342/ddJcSKbcp4rKZTmuyWaMhuwcfMz.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/453395"
+    },
+           {
+      id: 616037,
+      title: "Thor: Love and Thunder",
+      image: "https://image.tmdb.org/t/p/w342/pIkRyD18kl4FhoCNQuWxWu5cBLM.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/616037"
+    },
+           {
+      id: 505642,
+      title: "Black Panther: Wakanda Forever",
+      image: "https://image.tmdb.org/t/p/w342/sv1xJUazXeYqALzczSZ3O6nkH75.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/505642"
+    },
+           {
+      id: 640146,
+      title: "Ant-Man and the Wasp: Quantumania",
+      image: "https://image.tmdb.org/t/p/w342/qnqGbB22YJ7dSs4o6M7exTpNxPz.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/640146"
+    },
+           {
+      id: 447365,
+      title: "Guardians of the Galaxy Vol. 3",
+      image: "https://image.tmdb.org/t/p/w342/r2J02Z2OpNTctfOSN1Ydgii51I3.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/447365"
+    },
+           {
+      id: 609681,
+      title: "The Marvels",
+      image: "https://image.tmdb.org/t/p/w342/9GBhzXMFjgcZ3FdR9w3bUMMTps5.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/609681"
+    },
+           {
+      id: 533535,
+      title: "Deadpool & Wolverine",
+      image: "https://image.tmdb.org/t/p/w342/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/533535"
+    },
+           {
+      id: 822119,
+      title: "Captain America: Brave New World",
+      image: "https://image.tmdb.org/t/p/w342/pzIddUEMWhWzfvLI3TwxUG2wGoi.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/822119"
+    },
+           {
+      id: 986056,
+      title: "Thunderbolts",
+      image: "https://image.tmdb.org/t/p/w342/hBH50Mkcrc4m8x73CovLmY7vBx1.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/986056"
+    },
+               {
+      id: 1022787,
+      title: "Elio",
+      image: "https://image.tmdb.org/t/p/w342/w2ARwtc1zoh0pyfwmyhpZHwuXgK.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/1022787"
+    },
+                   {
+      id: 420818,
+      title: "The lion king",
+      image: "https://image.tmdb.org/t/p/w342/dzBtMocZuJbjLOXvrl4zGYigDzh.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/420818"
+    },
+                   {
+      id: 762509,
+      title: "Mufasa: The lion king",
+      image: "https://image.tmdb.org/t/p/w342/jbOSUAWMGzGL1L4EaUF8K6zYFo7.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/762509"
+    },
+                       {
+      id: 1084242,
+      title: "Zootopia 2",
+      image: "https://image.tmdb.org/t/p/w342/LrMBxFwnsMgXTnaWqHYinn3vDN.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/1084242"
+    },
+                       {
+      id: 269149,
+      title: "Zootopia",
+      image: "https://image.tmdb.org/t/p/w342/hlK0e0wAQ3VLuJcsfIYPvb4JVud.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/269149"
+    },
+    {
+      id: 552524,
+      title: "Lio & Stitch",
+      image: "https://image.tmdb.org/t/p/w342/7c5VBuCbjZOk7lSfj9sMpmDIaKX.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/552524"
+    },
+        {
+      id: 597,
+      title: "Titanic",
+      image: "https://image.tmdb.org/t/p/w342/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/597"
+    },
+        {
+      id: 150540,
+      title: "Inside out",
+      image: "https://image.tmdb.org/t/p/w342/2H1TmgdfNtsKlU9jKdeNyYL5y8T.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/150540"
+    },
+            {
+      id: 1022789,
+      title: "Inside out 2",
+      image: "https://image.tmdb.org/t/p/w342/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/1022789"
+    },
+            {
+      id: 508943,
+      title: "Luca",
+      image: "https://image.tmdb.org/t/p/w342/9x4i9uKGXt8IiiIF5Ey0DIoY738.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/508943"
+    },
+                {
+      id: 354912,
+      title: "Coco",
+      image: "https://image.tmdb.org/t/p/w342/6Ryitt95xrO8KXuqRGm1fUuNwqF.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/354912"
+    },
+                {
+      id: 76600,
+      title: "Avatar-the-way-of-water",
+      image: "https://image.tmdb.org/t/p/w342/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/76600"
+    },
+                {
+      id: 976573,
+      title: "Elemental",
+      image: "https://image.tmdb.org/t/p/w342/4Y1WNkd88JXmGfhtWR7dmDAo1T2.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/976573"
+    },
+                {
+      id: 72105,
+      title: "Ted",
+      image: "https://image.tmdb.org/t/p/w342/tZPTcdGTpxq4yJx1YxqBl0gthNz.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/72105"
+    },
+                {
+      id: 214756,
+      title: "Ted 2",
+      image: "https://image.tmdb.org/t/p/w342/38C91I7Xft0gyY7BITm8i4yvuRb.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/214756"
+    },
+                {
+      id: 116149,
+      title: "Paddington",
+      image: "https://image.tmdb.org/t/p/w342/wpchRGhRhvhtU083PfX2yixXtiw.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/116149"
+    },
+                {
+      id: 346648,
+      title: "Paddington 2",
+      image: "https://image.tmdb.org/t/p/w342/1OJ9vkD5xPt3skC6KguyXAgagRZ.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/346648"
+    },
+                {
+      id: 516729,
+      title: "Paddington in peru",
+      image: "https://image.tmdb.org/t/p/w342/1ffZAucqfvQu36x1C49XfOdjuOG.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/516729"
+    },
+    {
+      id: 536554,
+      title: "M3gan",
+      image: "https://image.tmdb.org/t/p/w342/d9nBoowhjiiYc4FBNtQkPY7c11H.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/536554"
+    },
+    {
+      id: 1071585,
+      title: "M3gan 2.0",
+      image: "https://image.tmdb.org/t/p/w342/4a63rQqIDTrYNdcnTXdPsQyxVLo.jpg",
+      genres: ["Actie", "Thriller", "Drama"],
+      url: "https://vidsrc.xyz/embed/movie/1071585"
+    },
+  ];
+
+  const series = [
+    {
+      id: 1,
+      title: "S.W.A.T.",
+      image: "https://m.media-amazon.com/images/M/MV5BNmNjZDEyNzAtYTI3NS00YTAwLWJiZjEtNzNmOGFkNTQ2MWIzXkEyXkFqcGc@._V1_.jpg",
+      genres: ["Actie", "Drama", "Misdaad", "Thriller"],
+      seasons: [
+        {
+          seasonNumber: 1,
+          episodes: [
+            { episodeNumber: 1, title: "Pilot", url: "https://vidsrc.xyz/embed/tv/71790/1/1" },
+            { episodeNumber: 2, title: "Cuchillo", url: "https://vidsrc.xyz/embed/tv/71790/1/2" },
+            { episodeNumber: 3, title: "Pamilya", url: "https://vidsrc.xyz/embed/tv/71790/1/3" },
+            { episodeNumber: 4, title: "Radical", url: "https://vidsrc.xyz/embed/tv/71790/1/4" },
+            { episodeNumber: 5, title: "imposters", url: "https://vidsrc.xyz/embed/tv/71790/1/5" },
+            { episodeNumber: 6, title: "Octane", url: "https://vidsrc.xyz/embed/tv/71790/1/6" },
+            { episodeNumber: 7, title: "Homecoming", url: "https://vidsrc.xyz/embed/tv/71790/1/7" },
+            { episodeNumber: 8, title: "Miracle", url: "https://vidsrc.xyz/embed/tv/71790/1/8" },
+            { episodeNumber: 9, title: "Blindspots", url: "https://vidsrc.xyz/embed/tv/71790/1/9" },
+            { episodeNumber: 10, title: "Seizure", url: "https://vidsrc.xyz/embed/tv/71790/1/10" },
+            { episodeNumber: 11, title: "K-town", url: "https://vidsrc.xyz/embed/tv/71790/1/11" },
+            { episodeNumber: 12, title: "Contamination", url: "https://vidsrc.xyz/embed/tv/71790/1/12" },
+            { episodeNumber: 13, title: "Fences", url: "https://vidsrc.xyz/embed/tv/71790/1/13" },
+            { episodeNumber: 14, title: "Ghosts", url: "https://vidsrc.xyz/embed/tv/71790/1/14" },
+            { episodeNumber: 15, title: "Crews", url: "https://vidsrc.xyz/embed/tv/71790/1/15" },
+            { episodeNumber: 16, title: "Payback", url: "https://vidsrc.xyz/embed/tv/71790/1/16" },
+            { episodeNumber: 17, title: "Armory", url: "https://vidsrc.xyz/embed/tv/71790/1/17" },
+            { episodeNumber: 18, title: "Patrol", url: "https://vidsrc.xyz/embed/tv/71790/1/18" },
+            { episodeNumber: 19, title: "Source", url: "https://vidsrc.xyz/embed/tv/71790/1/19" },
+            { episodeNumber: 20, title: "Vendetta", url: "https://vidsrc.xyz/embed/tv/71790/1/20" },
+            { episodeNumber: 21, title: "Hunted", url: "https://vidsrc.xyz/embed/tv/71790/1/21" },
+            { episodeNumber: 22, title: "Hoax", url: "https://vidsrc.xyz/embed/tv/71790/1/22" },
+          ]
+        },
+        {
+          seasonNumber: 2,
+          episodes: [
+            { episodeNumber: 1, title: "Shaky town", url: "https://vidsrc.xyz/embed/tv/71790/2/1" },
+            { episodeNumber: 2, title: "Gasoline drum", url: "https://vidsrc.xyz/embed/tv/71790/2/2" },
+            { episodeNumber: 3, title: "Fire and smoke", url: "https://vidsrc.xyz/embed/tv/71790/2/3" },
+            { episodeNumber: 4, title: "Saving face", url: "https://vidsrc.xyz/embed/tv/71790/2/4" },
+            { episodeNumber: 5, title: "S.O.S.", url: "https://vidsrc.xyz/embed/tv/71790/2/5" },
+            { episodeNumber: 6, title: "Never again", url: "https://vidsrc.xyz/embed/tv/71790/2/6" },
+            { episodeNumber: 7, title: "Inheritance", url: "https://vidsrc.xyz/embed/tv/71790/2/7" },
+            { episodeNumber: 8, title: "The tiffany experience", url: "https://vidsrc.xyz/embed/tv/71790/2/8" },
+            { episodeNumber: 9, title: "Day off", url: "https://vidsrc.xyz/embed/tv/71790/2/9" },
+            { episodeNumber: 10, title: "1000 Joules", url: "https://vidsrc.xyz/embed/tv/71790/2/10" },
+            { episodeNumber: 11, title: "School", url: "https://vidsrc.xyz/embed/tv/71790/2/11" },
+            { episodeNumber: 12, title: "Los huesos", url: "https://vidsrc.xyz/embed/tv/71790/2/12" },
+            { episodeNumber: 13, title: "Encore", url: "https://vidsrc.xyz/embed/tv/71790/2/13" },
+            { episodeNumber: 14, title: "The B-team", url: "https://vidsrc.xyz/embed/tv/71790/2/14" },
+            { episodeNumber: 15, title: "Fallen", url: "https://vidsrc.xyz/embed/tv/71790/2/15" },
+            { episodeNumber: 16, title: "Pride", url: "https://vidsrc.xyz/embed/tv/71790/2/16" },
+            { episodeNumber: 17, title: "Jack", url: "https://vidsrc.xyz/embed/tv/71790/2/17" },
+            { episodeNumber: 18, title: "Cash flow", url: "https://vidsrc.xyz/embed/tv/71790/2/18" },
+            { episodeNumber: 19, title: "Invisible", url: "https://vidsrc.xyz/embed/tv/71790/2/19" },
+            { episodeNumber: 20, title: "Rocket fuel", url: "https://vidsrc.xyz/embed/tv/71790/2/20" },
+            { episodeNumber: 21, title: "Day of dread", url: "https://vidsrc.xyz/embed/tv/71790/2/21" },
+            { episodeNumber: 22, title: "Trigger creep", url: "https://vidsrc.xyz/embed/tv/71790/2/22" },
+            { episodeNumber: 23, title: "Kangaroo", url: "https://vidsrc.xyz/embed/tv/71790/2/23" },
+          ]
+        },
+         {
+          seasonNumber: 3,
+          episodes: [
+            { episodeNumber: 1, title: "Fire in the sky", url: "https://vidsrc.xyz/embed/tv/71790/3/1" },
+            { episodeNumber: 2, title: "Bad faith", url: "https://vidsrc.xyz/embed/tv/71790/3/2" },
+            { episodeNumber: 3, title: "Funny money", url: "https://vidsrc.xyz/embed/tv/71790/3/3" },
+            { episodeNumber: 4, title: "Immunity", url: "https://vidsrc.xyz/embed/tv/71790/3/4" },
+            { episodeNumber: 5, title: "The LBC", url: "https://vidsrc.xyz/embed/tv/71790/3/5" },
+            { episodeNumber: 6, title: "Kingdom", url: "https://vidsrc.xyz/embed/tv/71790/3/6" },
+            { episodeNumber: 7, title: "Track", url: "https://vidsrc.xyz/embed/tv/71790/3/7" },
+            { episodeNumber: 8, title: "Lion's den", url: "https://vidsrc.xyz/embed/tv/71790/3/8" },
+            { episodeNumber: 9, title: "Sea legs", url: "https://vidsrc.xyz/embed/tv/71790/3/9" },
+            { episodeNumber: 10, title: "Monster", url: "https://vidsrc.xyz/embed/tv/71790/3/10" },
+            { episodeNumber: 11, title: "Bad cop", url: "https://vidsrc.xyz/embed/tv/71790/3/11" },
+            { episodeNumber: 12, title: "Good cop", url: "https://vidsrc.xyz/embed/tv/71790/3/12" },
+            { episodeNumber: 13, title: "Ekitai Rashku", url: "https://vidsrc.xyz/embed/tv/71790/3/13" },
+            { episodeNumber: 14, title: "Animus", url: "https://vidsrc.xyz/embed/tv/71790/3/14" },
+            { episodeNumber: 15, title: "Knockout", url: "https://vidsrc.xyz/embed/tv/71790/3/15" },
+            { episodeNumber: 16, title: "Gunpowder Treason", url: "https://vidsrc.xyz/embed/tv/71790/3/16" },
+            { episodeNumber: 17, title: "Hotel L.A.", url: "https://vidsrc.xyz/embed/tv/71790/3/17" },
+            { episodeNumber: 18, title: "Stigma", url: "https://vidsrc.xyz/embed/tv/71790/3/18" },
+            { episodeNumber: 19, title: "Vice", url: "https://vidsrc.xyz/embed/tv/71790/3/19" },
+            { episodeNumber: 20, title: "Wild ones", url: "https://vidsrc.xyz/embed/tv/71790/3/20" },
+            { episodeNumber: 21, title: "Diablo", url: "https://vidsrc.xyz/embed/tv/71790/3/21" },
+          ]
+        },
+        {
+          seasonNumber: 4,
+          episodes: [
+            { episodeNumber: 1, title: "3 Seventeen Year Olds (1)", url: "https://vidsrc.xyz/embed/tv/71790/4/1" },
+            { episodeNumber: 2, title: "Stakeout (2)", url: "https://vidsrc.xyz/embed/tv/71790/4/2" },
+            { episodeNumber: 3, title: "The Black Hand Man", url: "https://vidsrc.xyz/embed/tv/71790/4/3" },
+            { episodeNumber: 4, title: "Memento Mori", url: "https://vidsrc.xyz/embed/tv/71790/4/4" },
+            { episodeNumber: 5, title: "Fracture", url: "https://vidsrc.xyz/embed/tv/71790/4/5" },
+            { episodeNumber: 6, title: "Hopeless Sinners", url: "https://vidsrc.xyz/embed/tv/71790/4/6" },
+            { episodeNumber: 7, title: "Under fire", url: "https://vidsrc.xyz/embed/tv/71790/4/7" },
+            { episodeNumber: 8, title: "Crusade", url: "https://vidsrc.xyz/embed/tv/71790/4/8" },
+            { episodeNumber: 9, title: "Next of kin", url: "https://vidsrc.xyz/embed/tv/71790/4/9" },
+            { episodeNumber: 10, title: "Buried", url: "https://vidsrc.xyz/embed/tv/71790/4/10" },
+            { episodeNumber: 11, title: "Positive thinking", url: "https://vidsrc.xyz/embed/tv/71790/4/11" },
+            { episodeNumber: 12, title: "U-turn", url: "https://vidsrc.xyz/embed/tv/71790/4/12" },
+            { episodeNumber: 13, title: "Sins of the fathers", url: "https://vidsrc.xyz/embed/tv/71790/4/13" },
+            { episodeNumber: 14, title: "Reckoning", url: "https://vidsrc.xyz/embed/tv/71790/4/14" },
+            { episodeNumber: 15, title: "Local heroes", url: "https://vidsrc.xyz/embed/tv/71790/4/15" },
+            { episodeNumber: 16, title: "Lockdown", url: "https://vidsrc.xyz/embed/tv/71790/4/16" },
+            { episodeNumber: 17, title: "Whistleblower", url: "https://vidsrc.xyz/embed/tv/71790/4/17" },
+            { episodeNumber: 18, title: "Veritas Vincint", url: "https://vidsrc.xyz/embed/tv/71790/4/18" },
+          ]
+        },
+        {
+          seasonNumber: 5,
+          episodes: [
+            { episodeNumber: 1, title: "Vagabundo", url: "https://vidsrc.xyz/embed/tv/71790/5/1" },
+            { episodeNumber: 2, title: "Madrugada", url: "https://vidsrc.xyz/embed/tv/71790/5/2" },
+            { episodeNumber: 3, title: "27 David", url: "https://vidsrc.xyz/embed/tv/71790/5/3" },
+            { episodeNumber: 4, title: "Sentinel", url: "https://vidsrc.xyz/embed/tv/71790/5/4" },
+            { episodeNumber: 5, title: "West Coast Offense", url: "https://vidsrc.xyz/embed/tv/71790/5/5" },
+            { episodeNumber: 6, title: "Crisis actor", url: "https://vidsrc.xyz/embed/tv/71790/5/6" },
+            { episodeNumber: 7, title: "Keep the faith", url: "https://vidsrc.xyz/embed/tv/71790/5/7" },
+            { episodeNumber: 8, title: "Safe house", url: "https://vidsrc.xyz/embed/tv/71790/5/8" },
+            { episodeNumber: 9, title: "Survive", url: "https://vidsrc.xyz/embed/tv/71790/5/9" },
+            { episodeNumber: 10, title: "Three guns", url: "https://vidsrc.xyz/embed/tv/71790/5/10" },
+            { episodeNumber: 11, title: "Old school cool", url: "https://vidsrc.xyz/embed/tv/71790/5/11" },
+            { episodeNumber: 12, title: "Provenance", url: "https://vidsrc.xyz/embed/tv/71790/5/12" },
+            { episodeNumber: 13, title: "Short Fuse", url: "https://vidsrc.xyz/embed/tv/71790/5/13" },
+            { episodeNumber: 14, title: "Albatross", url: "https://vidsrc.xyz/embed/tv/71790/5/14" },
+            { episodeNumber: 15, title: "Donor", url: "https://vidsrc.xyz/embed/tv/71790/5/15" },
+            { episodeNumber: 16, title: "The fugitive", url: "https://vidsrc.xyz/embed/tv/71790/5/16" },
+            { episodeNumber: 17, title: "Cry foul", url: "https://vidsrc.xyz/embed/tv/71790/5/17" },
+            { episodeNumber: 18, title: "Family", url: "https://vidsrc.xyz/embed/tv/71790/5/18" },
+            { episodeNumber: 19, title: "Incoming", url: "https://vidsrc.xyz/embed/tv/71790/5/19" },
+            { episodeNumber: 20, title: "Quandary", url: "https://vidsrc.xyz/embed/tv/71790/5/20" },
+            { episodeNumber: 21, title: "Zodiac", url: "https://vidsrc.xyz/embed/tv/71790/5/21" },
+            { episodeNumber: 22, title: "Farewell", url: "https://vidsrc.xyz/embed/tv/71790/5/22" },
+          ]
+        },
+                 {
+          seasonNumber: 6,
+          episodes: [
+            { episodeNumber: 1, title: "Thai hard", url: "https://vidsrc.xyz/embed/tv/71790/6/1" },
+            { episodeNumber: 2, title: "Thai another day", url: "https://vidsrc.xyz/embed/tv/71790/6/2" },
+            { episodeNumber: 3, title: "Woah black betty", url: "https://vidsrc.xyz/embed/tv/71790/6/3" },
+            { episodeNumber: 4, title: "Maniak", url: "https://vidsrc.xyz/embed/tv/71790/6/4" },
+            { episodeNumber: 5, title: "Unraveling", url: "https://vidsrc.xyz/embed/tv/71790/6/5" },
+            { episodeNumber: 6, title: "Checkmate", url: "https://vidsrc.xyz/embed/tv/71790/6/6" },
+            { episodeNumber: 7, title: "Sequel", url: "https://vidsrc.xyz/embed/tv/71790/6/7" },
+            { episodeNumber: 8, title: "Guacaine", url: "https://vidsrc.xyz/embed/tv/71790/6/8" },
+            { episodeNumber: 9, title: "Pariah", url: "https://vidsrc.xyz/embed/tv/71790/6/9" },
+            { episodeNumber: 10, title: "Witness", url: "https://vidsrc.xyz/embed/tv/71790/6/10" },
+            { episodeNumber: 11, title: "Atonement", url: "https://vidsrc.xyz/embed/tv/71790/6/11" },
+            { episodeNumber: 12, title: "Addicted", url: "https://vidsrc.xyz/embed/tv/71790/6/12" },
+            { episodeNumber: 13, title: "Lion's share", url: "https://vidsrc.xyz/embed/tv/71790/6/13" },
+            { episodeNumber: 14, title: "Gut punch", url: "https://vidsrc.xyz/embed/tv/71790/6/14" },
+            { episodeNumber: 15, title: "To protect and to serve", url: "https://vidsrc.xyz/embed/tv/71790/6/15" },
+            { episodeNumber: 16, title: "Blowback", url: "https://vidsrc.xyz/embed/tv/71790/6/16" },
+            { episodeNumber: 17, title: "Stockholm", url: "https://vidsrc.xyz/embed/tv/71790/6/17" },
+            { episodeNumber: 18, title: "Genesis", url: "https://vidsrc.xyz/embed/tv/71790/6/18" },
+            { episodeNumber: 19, title: "Bunkies", url: "https://vidsrc.xyz/embed/tv/71790/6/19" },
+            { episodeNumber: 20, title: "All that glitters", url: "https://vidsrc.xyz/embed/tv/71790/6/20" },
+            { episodeNumber: 21, title: "Forget Shorty", url: "https://vidsrc.xyz/embed/tv/71790/6/21" },
+            { episodeNumber: 22, title: "Legacy", url: "https://vidsrc.xyz/embed/tv/71790/6/22" },
+          ]
+        },
+        {
+          seasonNumber: 7,
+          episodes: [
+            { episodeNumber: 1, title: "The promise", url: "https://vidsrc.xyz/embed/tv/71790/7/1" },
+            { episodeNumber: 2, title: "Peace talks", url: "https://vidsrc.xyz/embed/tv/71790/7/2" },
+            { episodeNumber: 3, title: "Good for nothing", url: "https://vidsrc.xyz/embed/tv/71790/7/3" },
+            { episodeNumber: 4, title: "Spare parts", url: "https://vidsrc.xyz/embed/tv/71790/7/4" },
+            { episodeNumber: 5, title: "End of the road", url: "https://vidsrc.xyz/embed/tv/71790/7/5" },
+            { episodeNumber: 6, title: "Escape", url: "https://vidsrc.xyz/embed/tv/71790/7/6" },
+            { episodeNumber: 7, title: "Last call", url: "https://vidsrc.xyz/embed/tv/71790/7/7" },
+            { episodeNumber: 8, title: "Family man", url: "https://vidsrc.xyz/embed/tv/71790/7/8" },
+            { episodeNumber: 9, title: "Honeytrap", url: "https://vidsrc.xyz/embed/tv/71790/7/9" },
+            { episodeNumber: 10, title: "SNAFU", url: "https://vidsrc.xyz/embed/tv/71790/7/10" },
+            { episodeNumber: 11, title: "Whispers", url: "https://vidsrc.xyz/embed/tv/71790/7/11" },
+            { episodeNumber: 12, title: "Allegaince", url: "https://vidsrc.xyz/embed/tv/71790/7/12" },
+            { episodeNumber: 13, title: "Twenty Squad", url: "https://vidsrc.xyz/embed/tv/71790/7/13" },
+          ]
+        },
+        {
+          seasonNumber: 8,
+          episodes: [
+            { episodeNumber: 1, title: "Vanished", url: "https://vidsrc.xyz/embed/tv/71790/8/1" },
+            { episodeNumber: 2, title: "Gang unit", url: "https://vidsrc.xyz/embed/tv/71790/8/2" },
+            { episodeNumber: 3, title: "Life", url: "https://vidsrc.xyz/embed/tv/71790/8/3" },
+            { episodeNumber: 4, title: "The Sepulveda Protocol", url: "https://vidsrc.xyz/embed/tv/71790/8/4" },
+            { episodeNumber: 5, title: "Human interest", url: "https://vidsrc.xyz/embed/tv/71790/8/5" },
+            { episodeNumber: 6, title: "Hot button", url: "https://vidsrc.xyz/embed/tv/71790/8/6" },
+            { episodeNumber: 7, title: "Home", url: "https://vidsrc.xyz/embed/tv/71790/8/7" },
+            { episodeNumber: 8, title: "Left of boom", url: "https://vidsrc.xyz/embed/tv/71790/8/8" },
+            { episodeNumber: 9, title: "Open season", url: "https://vidsrc.xyz/embed/tv/71790/8/9" },
+            { episodeNumber: 10, title: "The heights", url: "https://vidsrc.xyz/embed/tv/71790/8/10" },
+            { episodeNumber: 11, title: "AMBER", url: "https://vidsrc.xyz/embed/tv/71790/8/11" },
+            { episodeNumber: 12, title: "Deep cover", url: "https://vidsrc.xyz/embed/tv/71790/8/12" },
+            { episodeNumber: 13, title: "High ground", url: "https://vidsrc.xyz/embed/tv/71790/8/13" },
+            { episodeNumber: 14, title: "The santa Clara", url: "https://vidsrc.xyz/embed/tv/71790/8/14" },
+            { episodeNumber: 15, title: "Hostages", url: "https://vidsrc.xyz/embed/tv/71790/8/15" },
+            { episodeNumber: 16, title: "Hail Mary", url: "https://vidsrc.xyz/embed/tv/71790/8/16" },
+            { episodeNumber: 17, title: "The enemy within", url: "https://vidsrc.xyz/embed/tv/71790/8/17" },
+            { episodeNumber: 18, title: "Exploited", url: "https://vidsrc.xyz/embed/tv/71790/8/18" },
+            { episodeNumber: 19, title: "Run to ground", url: "https://vidsrc.xyz/embed/tv/71790/8/19" },
+            { episodeNumber: 20, title: "Devil dog", url: "https://vidsrc.xyz/embed/tv/71790/8/20" },
+            { episodeNumber: 21, title: "Ride or die (1)", url: "https://vidsrc.xyz/embed/tv/71790/8/21" },
+            { episodeNumber: 22, title: "Return to base (2)", url: "https://vidsrc.xyz/embed/tv/71790/8/22" },
+          ]
+        },
+      ]
+    },
+        {
+      id: 2,
+      title: "The rookie",
+      image: "https://m.media-amazon.com/images/M/MV5BMzc2MDdkZDUtZjZlYy00MGMyLWJkNzUtMTMxY2FkZjZjYmEyXkEyXkFqcGc@._V1_.jpg",
+      genres: ["Actie", "Drama", "Misdaad", "Thriller"],
+      seasons: [
+        {
+          seasonNumber: 1,
+          episodes: [
+            { episodeNumber: 1, title: "Pilot", url: "https://vidsrc.xyz/embed/tv/79744/1/1" },
+            { episodeNumber: 2, title: "Crash course", url: "https://vidsrc.xyz/embed/tv/79744/1/2" },
+            { episodeNumber: 3, title: "The good, the bad an the ugly", url: "https://vidsrc.xyz/embed/tv/79744/1/3" },
+            { episodeNumber: 4, title: "The switch", url: "https://vidsrc.xyz/embed/tv/79744/1/4" },
+            { episodeNumber: 5, title: "The roundup", url: "https://vidsrc.xyz/embed/tv/79744/1/5" },
+            { episodeNumber: 6, title: "The hawke", url: "https://vidsrc.xyz/embed/tv/79744/1/6" },
+            { episodeNumber: 7, title: "The ride along", url: "https://vidsrc.xyz/embed/tv/79744/1/7" },
+            { episodeNumber: 8, title: "Time of death", url: "https://vidsrc.xyz/embed/tv/79744/1/8" },
+            { episodeNumber: 9, title: "Standoff", url: "https://vidsrc.xyz/embed/tv/79744/1/9" },
+            { episodeNumber: 10, title: "Flesh and blood", url: "https://vidsrc.xyz/embed/tv/79744/1/10" },
+            { episodeNumber: 11, title: "Redwood", url: "https://vidsrc.xyz/embed/tv/79744/1/11" },
+            { episodeNumber: 12, title: "Heartbreak", url: "https://vidsrc.xyz/embed/tv/79744/1/12" },
+            { episodeNumber: 13, title: "Caught stealing", url: "https://vidsrc.xyz/embed/tv/79744/1/13" },
+            { episodeNumber: 14, title: "Plain clothes day", url: "https://vidsrc.xyz/embed/tv/79744/1/14" },
+            { episodeNumber: 15, title: "Manhunt", url: "https://vidsrc.xyz/embed/tv/79744/1/15" },
+            { episodeNumber: 16, title: "Greenlight", url: "https://vidsrc.xyz/embed/tv/79744/1/16" },
+            { episodeNumber: 17, title: "The shake up", url: "https://vidsrc.xyz/embed/tv/79744/1/17" },
+            { episodeNumber: 18, title: "Home front", url: "https://vidsrc.xyz/embed/tv/79744/1/18" },
+            { episodeNumber: 19, title: "The checklist", url: "https://vidsrc.xyz/embed/tv/79744/1/19" },
+            { episodeNumber: 20, title: "Free fall", url: "https://vidsrc.xyz/embed/tv/79744/1/20" },
+          ]
+        },
+        {
+          seasonNumber: 2,
+          episodes: [
+            { episodeNumber: 1, title: "Impact", url: "https://vidsrc.xyz/embed/tv/79744/2/1"},
+            { episodeNumber: 2, title: "The night general", url: "https://vidsrc.xyz/embed/tv/79744/2/2"},
+            { episodeNumber: 3, title: "The bet", url: "https://vidsrc.xyz/embed/tv/79744/2/3"},
+            { episodeNumber: 4, title: "Warriors and guardians", url: "https://vidsrc.xyz/embed/tv/79744/2/4"},
+            { episodeNumber: 5, title: "Tough love", url: "https://vidsrc.xyz/embed/tv/79744/2/5"},
+            { episodeNumber: 6, title: "Fallout", url: "https://vidsrc.xyz/embed/tv/79744/2/6"},
+            { episodeNumber: 7, title: "Safety", url: "https://vidsrc.xyz/embed/tv/79744/2/7"},
+            { episodeNumber: 8, title: "Clean cut", url: "https://vidsrc.xyz/embed/tv/79744/2/8"},
+            { episodeNumber: 9, title: "Breaking point", url: "https://vidsrc.xyz/embed/tv/79744/2/9"},
+            { episodeNumber: 10, title: "The dark side", url: "https://vidsrc.xyz/embed/tv/79744/2/10"},
+            { episodeNumber: 11, title: "Day of death", url: "https://vidsrc.xyz/embed/tv/79744/2/11"},
+            { episodeNumber: 12, title: "Now and then", url: "https://vidsrc.xyz/embed/tv/79744/2/12"},
+            { episodeNumber: 13, title: "Follow-up day", url: "https://vidsrc.xyz/embed/tv/79744/2/13"},
+            { episodeNumber: 14, title: "Casualties", url: "https://vidsrc.xyz/embed/tv/79744/2/14"},
+            { episodeNumber: 15, title: "Hand-off", url: "https://vidsrc.xyz/embed/tv/79744/2/15"},
+            { episodeNumber: 16, title: "The overnight", url: "https://vidsrc.xyz/embed/tv/79744/2/16"},
+            { episodeNumber: 17, title: "Control", url: "https://vidsrc.xyz/embed/tv/79744/2/17"},
+            { episodeNumber: 18, title: "Under the gun", url: "https://vidsrc.xyz/embed/tv/79744/2/18"},
+            { episodeNumber: 19, title: "The Q world (1)", url: "https://vidsrc.xyz/embed/tv/79744/2/19"},
+            { episodeNumber: 20, title: "The hunt (2)", url: "https://vidsrc.xyz/embed/tv/79744/2/20"},
+          ]
+        },
+        {
+          seasonNumber: 3,
+          episodes: [
+            { episodeNumber: 1, title: "Consequences", url: "https://vidsrc.xyz/embed/tv/79744/3/1"},
+            { episodeNumber: 2, title: "In justice", url: "https://vidsrc.xyz/embed/tv/79744/3/2"},
+            { episodeNumber: 3, title: "La fiera", url: "https://vidsrc.xyz/embed/tv/79744/3/3"},
+            { episodeNumber: 4, title: "Sabotage", url: "https://vidsrc.xyz/embed/tv/79744/3/4"},
+            { episodeNumber: 5, title: "Lockdown", url: "https://vidsrc.xyz/embed/tv/79744/3/5"},
+            { episodeNumber: 6, title: "Revelations", url: "https://vidsrc.xyz/embed/tv/79744/3/6"},
+            { episodeNumber: 7, title: "True crime", url: "https://vidsrc.xyz/embed/tv/79744/3/7"},
+            { episodeNumber: 8, title: "Bad blood", url: "https://vidsrc.xyz/embed/tv/79744/3/8"},
+            { episodeNumber: 9, title: "Amber", url: "https://vidsrc.xyz/embed/tv/79744/3/9"},
+            { episodeNumber: 10, title: "Man of honor", url: "https://vidsrc.xyz/embed/tv/79744/3/10"},
+            { episodeNumber: 11, title: "new blood", url: "https://vidsrc.xyz/embed/tv/79744/3/11"},
+            { episodeNumber: 12, title: "Brave heart", url: "https://vidsrc.xyz/embed/tv/79744/3/12"},
+            { episodeNumber: 13, title: "Triple duty", url: "https://vidsrc.xyz/embed/tv/79744/3/13"},
+            { episodeNumber: 14, title: "Threshold", url: "https://vidsrc.xyz/embed/tv/79744/3/14"},
+          ]
+        },
+        {
+          seasonNumber: 4,
+          episodes: [
+            { episodeNumber: 1, title: "Life and death", url: "https://vidsrc.xyz/embed/tv/79744/4/1"},
+            { episodeNumber: 2, title: "Five minutes", url: "https://vidsrc.xyz/embed/tv/79744/4/2"},
+            { episodeNumber: 3, title: "In the line of fire", url: "https://vidsrc.xyz/embed/tv/79744/4/3"},
+            { episodeNumber: 4, title: "Red hot", url: "https://vidsrc.xyz/embed/tv/79744/4/4"},
+            { episodeNumber: 5, title: "A.C.H.", url: "https://vidsrc.xyz/embed/tv/79744/4/5"},
+            { episodeNumber: 6, title: "Poetic justice", url: "https://vidsrc.xyz/embed/tv/79744/4/6"},
+            { episodeNumber: 7, title: "Fire fight", url: "https://vidsrc.xyz/embed/tv/79744/4/7"},
+            { episodeNumber: 8, title: "Hit and run", url: "https://vidsrc.xyz/embed/tv/79744/4/8"},
+            { episodeNumber: 9, title: "Breakdown", url: "https://vidsrc.xyz/embed/tv/79744/4/9"},
+            { episodeNumber: 10, title: "Heart beat", url: "https://vidsrc.xyz/embed/tv/79744/4/10"},
+            { episodeNumber: 11, title: "End game", url: "https://vidsrc.xyz/embed/tv/79744/4/11"},
+            { episodeNumber: 12, title: "The knock", url: "https://vidsrc.xyz/embed/tv/79744/4/12"},
+            { episodeNumber: 13, title: "Fight or flight", url: "https://vidsrc.xyz/embed/tv/79744/4/13"},
+            { episodeNumber: 14, title: "Long shot", url: "https://vidsrc.xyz/embed/tv/79744/4/14"},
+            { episodeNumber: 15, title: "Hit list", url: "https://vidsrc.xyz/embed/tv/79744/4/15"},
+            { episodeNumber: 16, title: "Real crime", url: "https://vidsrc.xyz/embed/tv/79744/4/16"},
+            { episodeNumber: 17, title: "Coding", url: "https://vidsrc.xyz/embed/tv/79744/4/17"},
+            { episodeNumber: 18, title: "Backstabbers", url: "https://vidsrc.xyz/embed/tv/79744/4/18"},
+            { episodeNumber: 19, title: "Simone", url: "https://vidsrc.xyz/embed/tv/79744/4/19"},
+            { episodeNumber: 20, title: "Enervo", url: "https://vidsrc.xyz/embed/tv/79744/4/20"},
+            { episodeNumber: 21, title: "Mother's day", url: "https://vidsrc.xyz/embed/tv/79744/4/21"},
+            { episodeNumber: 22, title: "Day in the hole", url: "https://vidsrc.xyz/embed/tv/79744/4/22"},
+          ]
+        },
+        {
+          seasonNumber: 5,
+          episodes: [
+            { episodeNumber: 1, title: "Double down", url: "https://vidsrc.xyz/embed/tv/79744/5/1"},
+            { episodeNumber: 2, title: "Labor day", url: "https://vidsrc.xyz/embed/tv/79744/5/2"},
+            { episodeNumber: 3, title: "Dye hard", url: "https://vidsrc.xyz/embed/tv/79744/5/3"},
+            { episodeNumber: 4, title: "The choice (1)", url: "https://vidsrc.xyz/embed/tv/79744/5/4"},
+            { episodeNumber: 5, title: "The Fugitive", url: "https://vidsrc.xyz/embed/tv/79744/5/5"},
+            { episodeNumber: 6, title: "The Reckoning", url: "https://vidsrc.xyz/embed/tv/79744/5/6"},
+            { episodeNumber: 7, title: "Crossfire", url: "https://vidsrc.xyz/embed/tv/79744/5/7"},
+            { episodeNumber: 8, title: "The collar", url: "https://vidsrc.xyz/embed/tv/79744/5/8"},
+            { episodeNumber: 9, title: "Take back", url: "https://vidsrc.xyz/embed/tv/79744/5/9"},
+            { episodeNumber: 10, title: "The list (1)", url: "https://vidsrc.xyz/embed/tv/79744/5/10"},
+            { episodeNumber: 11, title: "The naked and the dead", url: "https://vidsrc.xyz/embed/tv/79744/5/11"},
+            { episodeNumber: 12, title: "Death notice", url: "https://vidsrc.xyz/embed/tv/79744/5/12"},
+            { episodeNumber: 13, title: "Daddy cop", url: "https://vidsrc.xyz/embed/tv/79744/5/13"},
+            { episodeNumber: 14, title: "Death sentence", url: "https://vidsrc.xyz/embed/tv/79744/5/14"},
+            { episodeNumber: 15, title: "The con", url: "https://vidsrc.xyz/embed/tv/79744/5/15"},
+            { episodeNumber: 16, title: "Exposed", url: "https://vidsrc.xyz/embed/tv/79744/5/16"},
+            { episodeNumber: 17, title: "The enemy within (1)", url: "https://vidsrc.xyz/embed/tv/79744/5/17"},
+            { episodeNumber: 18, title: "Double trouble", url: "https://vidsrc.xyz/embed/tv/79744/5/18"},
+            { episodeNumber: 19, title: "A hole in the world", url: "https://vidsrc.xyz/embed/tv/79744/5/19"},
+            { episodeNumber: 20, title: "S.T.R.", url: "https://vidsrc.xyz/embed/tv/79744/5/20"},
+            { episodeNumber: 21, title: "Going under (1)", url: "https://vidsrc.xyz/embed/tv/79744/5/21"},
+            { episodeNumber: 22, title: "Under Siege", url: "https://vidsrc.xyz/embed/tv/79744/5/22"},
+          ]
+        },
+      ]
+    }
+  ];
+  
+  const navFilms = document.getElementById("nav-films");
+  const navSeries = document.getElementById("nav-series");
+  const searchInput = document.getElementById("search-input");
+  const genresContainer = document.getElementById("genres-container");
+  const main = document.getElementById("main");
+  const sidebar = document.getElementById("sidebar");
+  const modal = document.getElementById("modal");
+  const modalIframe = modal.querySelector("iframe");
+  const closeBtn = modal.querySelector(".close-btn");
+  
+  let currentPage = "films";
+  let selectedGenres = new Set();
+  let selectedSeries = null;
+  let selectedSeason = null;
+  let selectedEpisode = null;
+  
+  const allGenres = [...new Set([
+    ...films.flatMap(film => film.genres),
+    ...series.flatMap(serie => serie.genres)
+  ])].sort();
+
+  function renderGenres() {
+    genresContainer.innerHTML = "";
+    allGenres.forEach(genre => {
+      const btn = document.createElement("button");
+      btn.className = "genre-chip";
+      btn.textContent = genre;
+      btn.type = "button";
+      btn.setAttribute("role", "listitem");
+      btn.addEventListener("click", () => {
+        if (selectedGenres.has(genre)) {
+          selectedGenres.delete(genre);
+          btn.classList.remove("selected");
+        } else {
+          selectedGenres.add(genre);
+          btn.classList.add("selected");
+        }
+        if(currentPage === "films") renderFilms();
+        else if(currentPage === "series") renderSeries();
+      });
+      genresContainer.appendChild(btn);
+    });
+  }
+
+  function createItemCard(item, type) {
+    const card = document.createElement("div");
+    card.className = "item-card";
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", `${type === "film" ? "Film" : "Serie"}: ${item.title}`);
+
+    const img = document.createElement("img");
+    img.src = item.image;
+    img.alt = `${item.title} cover`;
+    card.appendChild(img);
+
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "title";
+    titleDiv.textContent = item.title;
+    card.appendChild(titleDiv);
+
+    card.addEventListener("click", () => {
+      if(type === "film") openFilm(item);
+      else if(type === "serie") openSerieDetail(item);
+    });
+    card.addEventListener("keydown", e => {
+      if(e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        card.click();
+      }
+    });
+
+    return card;
+  }
+
+  function renderFilms() {
+    searchInput.removeAttribute("disabled");
+    searchInput.value = "";
+    searchInput.setAttribute("placeholder", "Zoek films...");
+    genresContainer.style.display = "flex";
+    sidebar.style.display = "block";
+
+    navFilms.classList.add("active");
+    navFilms.setAttribute("aria-selected", "true");
+    navFilms.tabIndex = 0;
+
+    navSeries.classList.remove("active");
+    navSeries.setAttribute("aria-selected", "false");
+    navSeries.tabIndex = -1;
+
+    document.querySelectorAll(".genre-chip").forEach(btn => {
+      btn.classList.remove("selected");
+    });
+    selectedGenres.clear();
+
+    const updateFilmList = () => {
+      const zoekTerm = searchInput.value.toLowerCase().trim();
+      let filteredFilms = films;
+
+      if (zoekTerm.length > 0) {
+        filteredFilms = filteredFilms.filter(film =>
+          film.title.toLowerCase().includes(zoekTerm)
+        );
+      }
+      if (selectedGenres.size > 0) {
+        filteredFilms = filteredFilms.filter(film =>
+          [...selectedGenres].every(g => film.genres.includes(g))
+        );
+      }
+
+      main.innerHTML = "";
+      if (filteredFilms.length === 0) {
+        const noResults = document.createElement("div");
+        noResults.className = "no-results";
+        noResults.textContent = "Geen films gevonden.";
+        main.appendChild(noResults);
+      } else {
+        const grid = document.createElement("div");
+        grid.className = "item-grid";
+        filteredFilms.forEach(film => {
+          grid.appendChild(createItemCard(film, "film"));
+        });
+        main.appendChild(grid);
+      }
+    };
+
+    searchInput.oninput = updateFilmList;
+
+    document.querySelectorAll(".genre-chip").forEach(btn => {
+      btn.onclick = () => {
+        const genre = btn.textContent;
+        if (selectedGenres.has(genre)) {
+          selectedGenres.delete(genre);
+          btn.classList.remove("selected");
+        } else {
+          selectedGenres.add(genre);
+          btn.classList.add("selected");
+        }
+        updateFilmList();
+      };
+    });
+
+    updateFilmList();
+  }
+
+  function openFilm(film) {
+    modalIframe.src = film.url;
+    modal.classList.add("visible");
+    modal.focus();
+  }
+
+  function renderSeries() {
+    searchInput.removeAttribute("disabled");
+    searchInput.value = "";
+    searchInput.setAttribute("placeholder", "Zoek series...");
+    genresContainer.style.display = "flex";
+    sidebar.style.display = "block";
+
+    navFilms.classList.remove("active");
+    navFilms.setAttribute("aria-selected", "false");
+    navFilms.tabIndex = -1;
+
+    navSeries.classList.add("active");
+    navSeries.setAttribute("aria-selected", "true");
+    navSeries.tabIndex = 0;
+
+    document.querySelectorAll(".genre-chip").forEach(btn => {
+      btn.classList.remove("selected");
+    });
+    selectedGenres.clear();
+
+    const updateSeriesList = () => {
+      const zoekTerm = searchInput.value.toLowerCase().trim();
+      let filteredSeries = series;
+
+      if (zoekTerm.length > 0) {
+        filteredSeries = filteredSeries.filter(serie =>
+          serie.title.toLowerCase().includes(zoekTerm)
+        );
+      }
+      if (selectedGenres.size > 0) {
+        filteredSeries = filteredSeries.filter(serie =>
+          [...selectedGenres].every(g => serie.genres.includes(g))
+        );
+      }
+
+      main.innerHTML = "";
+      if (filteredSeries.length === 0) {
+        const noResults = document.createElement("div");
+        noResults.className = "no-results";
+        noResults.textContent = "Geen series gevonden.";
+        main.appendChild(noResults);
+      } else {
+        const grid = document.createElement("div");
+        grid.className = "item-grid";
+        filteredSeries.forEach(serie => {
+          grid.appendChild(createItemCard(serie, "serie"));
+        });
+        main.appendChild(grid);
+      }
+    };
+
+    searchInput.oninput = updateSeriesList;
+
+    document.querySelectorAll(".genre-chip").forEach(btn => {
+      btn.onclick = () => {
+        const genre = btn.textContent;
+        if (selectedGenres.has(genre)) {
+          selectedGenres.delete(genre);
+          btn.classList.remove("selected");
+        } else {
+          selectedGenres.add(genre);
+          btn.classList.add("selected");
+        }
+        updateSeriesList();
+      };
+    });
+
+    updateSeriesList();
+  }
+
+  function openSerieDetail(serie) {
+    selectedSeries = serie;
+    selectedSeason = serie.seasons[0];
+    selectedEpisode = null;
+
+    sidebar.style.display = "none";
+
+    navFilms.classList.remove("active");
+    navFilms.setAttribute("aria-selected", "false");
+    navFilms.tabIndex = -1;
+
+    navSeries.classList.add("active");
+    navSeries.setAttribute("aria-selected", "true");
+    navSeries.tabIndex = 0;
+
+    renderSerieDetail();
+  }
+
+  function renderSerieDetail() {
+    main.innerHTML = "";
+
+    const title = document.createElement("h1");
+    title.textContent = selectedSeries.title;
+    title.style.marginBottom = "1rem";
+    main.appendChild(title);
+
+    const seasonSelector = document.createElement("div");
+    seasonSelector.id = "season-selector";
+    selectedSeries.seasons.forEach(season => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = "Seizoen " + season.seasonNumber;
+      if(season === selectedSeason) btn.classList.add("selected");
+      btn.addEventListener("click", () => {
+        if(selectedSeason !== season) {
+          selectedSeason = season;
+          selectedEpisode = null;
+          renderSerieDetail();
+        }
+      });
+      seasonSelector.appendChild(btn);
+    });
+    main.appendChild(seasonSelector);
+
+    const episodeList = document.createElement("div");
+    episodeList.id = "episode-list";
+    if(selectedSeason.episodes.length === 0) {
+      const noEp = document.createElement("div");
+      noEp.className = "no-results";
+      noEp.textContent = "Geen afleveringen beschikbaar.";
+      episodeList.appendChild(noEp);
+    } else {
+      selectedSeason.episodes.forEach(episode => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = `Aflevering ${episode.episodeNumber}: ${episode.title}`;
+        if(selectedEpisode === episode) btn.classList.add("selected");
+        btn.addEventListener("click", () => {
+          selectedEpisode = episode;
+          openEpisode(episode);
+          renderSerieDetail();
+        });
+        episodeList.appendChild(btn);
+      });
+    }
+    main.appendChild(episodeList);
+    main.focus();
+  }
+
+  function openEpisode(episode) {
+    modalIframe.src = episode.url;
+    modal.classList.add("visible");
+    modal.focus();
+  }
+
+  closeBtn.addEventListener("click", closeModal);
+  modal.addEventListener("click", e => {
+    if(e.target === modal) {
+      closeModal();
+    }
+  });
+  document.addEventListener("keydown", e => {
+    if(e.key === "Escape" && modal.classList.contains("visible")) {
+      closeModal();
+    }
+  });
+  function closeModal() {
+    modal.classList.remove("visible");
+    modalIframe.src = "";
+  }
+
+  navFilms.addEventListener("click", e => {
+    e.preventDefault();
+    if(currentPage !== "films") {
+      currentPage = "films";
+      selectedSeries = null;
+      selectedSeason = null;
+      selectedEpisode = null;
+      sidebar.style.display = "block";
+      renderFilms();
+    }
+  });
+  navSeries.addEventListener("click", e => {
+    e.preventDefault();
+    if(currentPage !== "series") {
+      currentPage = "series";
+      selectedSeries = null;
+      selectedSeason = null;
+      selectedEpisode = null;
+      sidebar.style.display = "block";
+      renderSeries();
+    }
+  });
+
+  renderGenres();
+  renderFilms();
+
+</script>
